@@ -87,8 +87,6 @@ if __name__ == '__main__':
         n_classes = 10
     elif args.dataset == 'cifar100':
         n_classes = 100
-    elif args.dataset == 'skin':
-        n_classes = 7
     train_dl_locals = []
     for client_idx in clt_ids:
         if client_idx == 0:
@@ -112,10 +110,6 @@ if __name__ == '__main__':
         test_dl, test_ds = get_dataloader(args, X_test, y_test,
                                           args.dataset, args.datadir, args.batch_size,
                                           is_labeled=True, is_testing=True)
-    elif args.dataset == 'skin':
-        test_dl, test_ds = get_dataloader(args, X_test, y_test,
-                                          args.dataset, args.datadir, args.batch_size,
-                                          is_labeled=True, is_testing=True, pre_sz=args.pre_sz, input_sz=args.input_sz)          
         
         
     # net_glob = ModelFedCon(args.model, args.out_dim, n_classes=n_classes)
@@ -175,7 +169,7 @@ if __name__ == '__main__':
             if client_idx in supervised_user_id:
                 local = lab_trainer_locals[client_idx]
                 train_dl_local = train_dl_locals[client_idx]
-                w, loss = local.train(net_glob.state_dict(), train_dl_local)  # network, loss, optimizer
+                w, loss = local.train(net_glob.state_dict(), train_dl_local)  
                 delta_locals_this_round.append(compute_delta(w, net_glob.cuda()))
                 loss_locals.append(loss)
                 logging.info('Labeled client {}: training loss : {} '.format(client_idx, loss))
@@ -200,3 +194,4 @@ if __name__ == '__main__':
         
         logging.info(  "\nTEST Accus: {:6f}"
                     .format(Accus_avg))
+
